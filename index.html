@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Winter arc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2EAE0; --panel:#E8DDCF; --line:#D9CDBD; --ink:#26211E; --soft:#8A7F76;
+  --clay:#B9643F; --sage:#6F7F5A; --peach:#D9B49C;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);font-size:16px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+main{max-width:560px;margin:0 auto;padding:28px 22px 24px}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;text-align:left}
+:focus-visible{outline:2px solid var(--clay);outline-offset:3px;border-radius:4px}
+
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--clay)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(38px,11vw,52px);line-height:.98;letter-spacing:-.03em;margin:12px 0 18px}
+.rule{width:48px;height:3px;background:var(--clay);margin-bottom:24px}
+.month-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:8px;margin:30px 0 6px}
+.month-head h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:30px;color:var(--sage)}
+.month-head span{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--clay)}
+.sub{font-family:var(--serif);font-style:italic;font-size:19px;margin:28px 0 10px}
+.note{font-family:var(--serif);font-style:italic;color:var(--soft);font-size:15px}
+.closing{font-family:var(--serif);font-style:italic;font-size:21px;text-align:center;margin:30px 0 8px}
+
+/* check rows */
+.row{display:flex;gap:14px;align-items:flex-start;width:100%;padding:13px 0;border-bottom:1px solid var(--line)}
+.box{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--sage);margin-top:1px;transition:background .15s}
+.row[aria-pressed="true"] .box{background:var(--sage)}
+.row[aria-pressed="true"] .txt{color:var(--soft)}
+.row small{display:block;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--soft)}
+.row .was{font-weight:600;min-width:92px}
+.row .now{font-family:var(--serif);font-style:italic;color:var(--clay);font-size:18px;line-height:1.3}
+
+/* today */
+.status{background:var(--panel);border-radius:16px;padding:18px 18px 8px;margin-bottom:8px}
+.status .row:last-of-type{border-bottom:0}
+.status .empty{padding:6px 0 12px}
+.pill-btn{display:inline-block;border:1px solid var(--clay);color:var(--clay);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:500;margin:6px 0 12px}
+.pill-btn[aria-pressed="true"]{background:var(--peach);border-color:var(--peach);color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:4px;margin:26px 0 4px}
+.seg button{flex:1;text-align:center;padding:9px;border-radius:999px;font-size:14px;font-weight:500;color:var(--soft)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.tl{position:relative;margin-top:10px}
+.tl::before{content:"";position:absolute;left:76px;top:18px;bottom:18px;width:1.5px;background:var(--line)}
+.tl button{display:grid;grid-template-columns:62px 30px 1fr;align-items:start;width:100%;padding:10px 0}
+.tl time{font-family:var(--serif);font-weight:700;color:var(--clay);font-size:19px;text-align:right}
+.tl .dot{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--sage);background:var(--bg);margin:7px auto 0;position:relative;transition:background .15s}
+.tl button[aria-pressed="true"] .dot{background:var(--sage)}
+.tl b{font-weight:600;font-size:17px;display:block}
+.tl small{font-family:var(--serif);font-style:italic;color:var(--soft);font-size:15px}
+.tl button[aria-pressed="true"] b{color:var(--soft);text-decoration:line-through;text-decoration-thickness:1px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 14px;font-size:14px}
+.chips button[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:#fff}
+
+/* tracker */
+.nn{display:grid;gap:10px;margin-bottom:6px}
+.nn label{display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line)}
+.nn span{color:var(--clay);font-weight:600;font-size:14px}
+.nn input{flex:1;border:0;background:none;padding:8px 0;min-width:0}
+.nn input::placeholder{color:var(--soft);font-family:var(--serif);font-style:italic}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:14px}
+.grid button{aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line);text-align:center;font-size:14px;color:var(--soft);transition:background .15s}
+.grid button[data-s="1"]{background:var(--sage);border-color:var(--sage);color:#fff}
+.grid button[data-s="2"]{background:var(--peach);border-color:var(--peach);color:var(--ink)}
+.grid button.today{border-color:var(--clay);border-width:2px;color:var(--clay);font-weight:600}
+.grid button.today[data-s="1"]{color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;font-size:14px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;border:1.5px solid var(--line)}
+.streak{font-family:var(--serif);font-size:19px;font-style:italic;margin-bottom:22px}
+.streak b{font-style:normal;font-weight:900;color:var(--clay);font-size:26px}
+
+/* swaps */
+.swap{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;padding:14px 0;border-bottom:1px solid var(--line)}
+.swap s{color:var(--soft)}
+.swap[aria-pressed="true"] span{color:var(--sage);font-weight:600}
+.swap[aria-pressed="true"] span::before{content:"✓ "}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-bottom:1px solid var(--line);padding-bottom:6px;font-family:var(--serif);font-style:italic;font-size:26px}
+.cols :first-child{color:var(--soft)} .cols :last-child{color:var(--sage)}
+
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);
+  display:flex;justify-content:center;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+nav div{display:flex;width:100%;max-width:560px}
+nav button{flex:1;text-align:center;padding:12px 4px;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--soft);border-radius:999px}
+nav button[aria-current="page"]{color:var(--ink);background:var(--panel)}
+.reset{display:block;margin:34px auto 0;color:var(--soft);font-size:13px;text-decoration:underline}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"><p class="note">Loading your arc…</p></main>
+<nav aria-label="Sections"><div id="nav"></div></nav>
+
+<script>
+const KEY = 'winter-arc-state';
+const TABS = [['today','today'],['tracker','tracker'],['roadmap','roadmap'],['swaps','swaps']];
+const MONTHS = [
+  {m:10,name:'october',tag:'Build the base',days:31,items:['pick 3 habits, not 12','train 3x a week','phone sleeps outside the bedroom','same wake-up, even weekends','7k steps daily','set up your planner & tracker']},
+  {m:11,name:'november',tag:'Lock in',days:30,items:['train 4x a week','sunday meal prep','finish one book','10k steps daily','90 min deep work before noon','screens off 60 min before bed']},
+  {m:12,name:'december',tag:'Finish strong',days:31,items:['no pause over the holidays','rest days are part of the plan','one new skill, 20 min a day','progress photos & check-in','write your 2027 goals','ask: what stays for spring?']}
+];
+const CHIPS = ['2–3L water','morning daylight','7–9h sleep','skincare','5 min journal','stretch','protein at every meal'];
+const TIMELINE = [
+  ['06:00','wake up, no snooze','curtains open, daylight in'],
+  ['06:15','water + electrolytes','before any coffee'],
+  ['06:30','move','training or a 20-minute walk'],
+  ['07:30','shower, skincare, get ready','dress for the day you want'],
+  ['08:00','protein breakfast','eat before you scroll'],
+  ['08:30','deep work block','hardest task first, phone in another room'],
+  ['12:30','lunch + 10 min outside','winter daylight counts double'],
+  ['13:30','second work block','emails, admin, the easy stuff'],
+  ['17:00','the step walk','podcast on, hit your 10k'],
+  ['18:30','dinner + 10-minute tidy','future you says thanks'],
+  ['19:30','something just for you','read, create, call a friend'],
+  ['21:00','screens off','journal, prep tomorrow'],
+  ['22:00','lights out','sleep is part of the plan']
+];
+const MINIMUM = [
+  ['train','10 squats and a stretch'],['10k steps','one lap around the block'],['deep work','25 minutes, one task'],
+  ['read','one page'],['journal','one honest sentence'],['skincare','cleanser + moisturizer'],
+  ['eat well','one meal with protein & something green'],['water','one full bottle'],['bedtime','phone charging across the room']
+];
+const SWAPS = [
+  ['snoozing five times','feet on the floor at alarm one'],['scrolling in bed','10 pages of a real book'],
+  ['“i’ll start monday”','start today, start small'],['skipping when you’re tired','the 20-minute minimum'],
+  ['coffee before water','a full glass first'],['takeout four nights a week','sunday meal prep'],
+  ['lunch-break doomscrolling','10 minutes outside'],['comparing your progress','tracking your progress'],
+  ['all or nothing','80% is still a win'],['yes to every plan','protecting your evenings'],
+  ['cramming the night before','30 min review, daily'],['waiting for motivation','trusting the routine']
+];
+
+const now = new Date();
+const TODAY = now.getMonth()+1 + '-' + now.getDate();
+const DATE = now.toDateString();
+const blank = () => ({nn:['','',''],days:{},road:{},swaps:{},bad:false,daily:{date:DATE,nn:{},t:{},chips:{},min:{}}});
+let S = blank(), tab = 'today', saveTimer;
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const on = v => v ? 'true' : 'false';
+
+async function load(){
+  try{
+    let v;
+    if(window.storage){ const r = await window.storage.get(KEY, false); v = r && r.value; }
+    else v = window['local'+'Storage'].getItem(KEY); // hosted outside Claude
+    if(v) S = Object.assign(blank(), JSON.parse(v));
+  }catch(e){ /* nothing saved yet, or storage unavailable */ }
+  if(!S.daily || S.daily.date !== DATE) S.daily = blank().daily; // fresh ticks each day
+  render();
+}
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try{ if(window.storage) await window.storage.set(KEY, JSON.stringify(S), false); else window['local'+'Storage'].setItem(KEY, JSON.stringify(S)); }catch(e){ console.error('Could not save', e); }
+  }, 500);
+}
+
+function dayNumber(){
+  const start = new Date(now.getFullYear(), 9, 1);
+  const n = Math.floor((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - start)/864e5) + 1;
+  return n >= 1 && n <= 92 ? n : null;
+}
+function streak(){
+  let d = new Date(now.getFullYear(), now.getMonth(), now.getDate()), n = 0;
+  const k = x => x.getMonth()+1 + '-' + x.getDate();
+  if(!S.days[k(d)]) d.setDate(d.getDate()-1);
+  while(S.days[k(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+const head = (eyebrow, title) => `<p class="eyebrow">${eyebrow}</p><h1>${title}</h1><div class="rule"></div>`;
+
+const views = {
+  today(){
+    const n = dayNumber(), set = S.nn.some(x => x.trim());
+    const nnRows = S.nn.map((x,i) => x.trim() ? `<button class="row" data-a="nn" data-i="${i}" aria-pressed="${on(S.daily.nn[i])}"><span class="box"></span><span class="txt">${esc(x)}</span></button>` : '').join('');
+    const body = S.bad
+      ? `<p class="note" style="margin-top:16px">for the days you really don't feel like it</p>` +
+        MINIMUM.map((r,i) => `<button class="row" data-a="min" data-i="${i}" aria-pressed="${on(S.daily.min[i])}"><span class="box"></span><span class="was">${r[0]}</span><span class="now">${r[1]}</span></button>`).join('') +
+        `<p class="closing">the minimum still counts.</p><p class="note" style="text-align:center">never skip twice in a row</p>`
+      : `<div class="tl">` + TIMELINE.map((r,i) => `<button data-a="t" data-i="${i}" aria-pressed="${on(S.daily.t[i])}"><time>${r[0]}</time><span class="dot"></span><span><b>${r[1]}</b><small>${r[2]}</small></span></button>`).join('') + `</div>` +
+        `<p class="sub">every single day, all 90 of them</p><div class="chips">` +
+        CHIPS.map((c,i) => `<button data-a="chips" data-i="${i}" aria-pressed="${on(S.daily.chips[i])}">${c}</button>`).join('') + `</div>`;
+    return head(n ? `Day ${n} of 92` : 'Winter arc', now.toLocaleDateString('en-GB',{weekday:'long'}).toLowerCase() + ',<br>' + now.toLocaleDateString('en-GB',{day:'numeric',month:'long'}).toLowerCase() + '.') +
+      `<div class="status"><p class="sub" style="margin-top:0">my 3 non-negotiables</p>` +
+      (set ? nnRows : `<p class="note empty">Pick your three in the tracker tab and they'll show up here to tick off.</p>`) +
+      `<button class="pill-btn" data-a="showed" aria-pressed="${on(S.days[TODAY]===2)}">${S.days[TODAY]===2 ? 'showed up anyway ✓' : 'I showed up anyway'}</button></div>` +
+      `<div class="seg"><button data-a="mode" data-v="0" aria-pressed="${on(!S.bad)}">full day</button><button data-a="mode" data-v="1" aria-pressed="${on(S.bad)}">bad day minimum</button></div>` + body;
+  },
+  tracker(){
+    const s = streak();
+    return head('Tap a day to fill it in','the winter arc<br>tracker.') +
+      `<p class="streak"><b>${s}</b> day${s===1?'':'s'} in the chain. don't break it.</p>` +
+      `<p class="sub" style="margin-top:0">my 3 non-negotiables</p><div class="nn">` +
+      S.nn.map((x,i) => `<label><span>${i+1}</span><input data-nn="${i}" value="${esc(x)}" placeholder="a habit you'll do daily" maxlength="60" aria-label="Non-negotiable ${i+1}"></label>`).join('') + `</div>` +
+      MONTHS.map(mo => `<div class="month-head"><h2>${mo.name}</h2><span>${mo.tag}</span></div><div class="grid">` +
+        Array.from({length:mo.days},(_,d) => { const k = mo.m+'-'+(d+1);
+          return `<button data-a="day" data-k="${k}" data-s="${S.days[k]||0}" class="${k===TODAY?'today':''}" aria-label="${d+1} ${mo.name}">${d+1}</button>`; }).join('') + `</div>`).join('') +
+      `<div class="legend"><span><i style="background:var(--sage);border-color:var(--sage)"></i>all 3 done</span><span><i style="background:var(--peach);border-color:var(--peach)"></i>showed up anyway</span><span><i></i>tomorrow</span></div>` +
+      `<button class="reset" data-a="reset">Clear everything and start over</button>`;
+  },
+  roadmap(){
+    return head('The 90-day roadmap','winter arc,<br>month by month.') +
+      MONTHS.map(mo => `<div class="month-head"><h2>${mo.name}</h2><span>${mo.tag}</span></div>` +
+        mo.items.map((t,i) => { const k = mo.m+'-'+i;
+          return `<button class="row" data-a="road" data-k="${k}" aria-pressed="${on(S.road[k])}"><span class="box"></span><span class="txt">${t}</span></button>`; }).join('')).join('');
+  },
+  swaps(){
+    const done = Object.values(S.swaps).filter(Boolean).length;
+    return head('The swap list','winter arc:<br>quit this, do that.') +
+      `<p class="note" style="margin-bottom:18px">${done} of ${SWAPS.length} swapped. Tap one when it's stuck.</p>` +
+      `<div class="cols"><span>quit</span><span>start</span></div>` +
+      SWAPS.map((r,i) => `<button class="swap" data-a="swap" data-i="${i}" aria-pressed="${on(S.swaps[i])}"><s>${r[0]}</s><span>${r[1]}</span></button>`).join('') +
+      `<p class="closing">small swaps, big winter.</p>`;
+  }
+};
+
+function render(keepScroll){
+  document.getElementById('app').innerHTML = views[tab]();
+  document.getElementById('nav').innerHTML = TABS.map(t => `<button data-tab="${t[0]}" ${t[0]===tab?'aria-current="page"':''}>${t[1]}</button>`).join('');
+  if(!keepScroll) window.scrollTo(0,0);
+}
+
+document.addEventListener('click', e => {
+  const nav = e.target.closest('[data-tab]');
+  if(nav){ tab = nav.dataset.tab; return render(); }
+  const b = e.target.closest('[data-a]'); if(!b) return;
+  const a = b.dataset.a, i = b.dataset.i, k = b.dataset.k;
+  if(a==='t'||a==='chips'||a==='min') S.daily[a][i] = !S.daily[a][i];
+  else if(a==='nn'){
+    S.daily.nn[i] = !S.daily.nn[i];
+    const active = S.nn.map((x,j) => x.trim() ? j : -1).filter(j => j >= 0);
+    if(active.every(j => S.daily.nn[j])) S.days[TODAY] = 1;      // all done → green
+    else if(S.days[TODAY] === 1) delete S.days[TODAY];
+  }
+  else if(a==='showed'){ if(S.days[TODAY]===2) delete S.days[TODAY]; else S.days[TODAY] = 2; }
+  else if(a==='mode') S.bad = b.dataset.v === '1';
+  else if(a==='day'){ const v = ((S.days[k]||0)+1)%3; if(v) S.days[k] = v; else delete S.days[k]; }
+  else if(a==='road') S.road[k] = !S.road[k];
+  else if(a==='swap') S.swaps[i] = !S.swaps[i];
+  else if(a==='reset'){ if(!confirm('Clear your tracker, ticks and non-negotiables?')) return; S = blank(); }
+  save(); render(true);
+});
+document.addEventListener('input', e => {
+  const i = e.target.dataset.nn;
+  if(i !== undefined){ S.nn[i] = e.target.value; save(); }
+});
+
+load();
+</script>
+</body>
+</html>
